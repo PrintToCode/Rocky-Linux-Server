@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Arquitectura de Computadores y Sistemas Operativos — UPC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700;900&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet"/>
+  <style>
+    :root {
+      --rojo:    #C8102E;
+      --rojo-d:  #9B0D23;
+      --crema:   #F5F0E8;
+      --blanco:  #FDFCFA;
+      --gris:    #6B6B6B;
+      --oscuro:  #1A1A2E;
+      --acento:  #E8C547;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'DM Sans', sans-serif;
+      background: var(--oscuro);
+      color: var(--blanco);
+      overflow-x: hidden;
+    }
+
+    /* ── HERO ── */
+    .hero {
+      min-height: 100vh;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 60px 24px;
+      overflow: hidden;
+    }
+
+    /* Grid de fondo animado */
+    .hero::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(200,16,46,.08) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(200,16,46,.08) 1px, transparent 1px);
+      background-size: 60px 60px;
+      animation: gridMove 20s linear infinite;
+    }
+
+    @keyframes gridMove {
+      0%   { transform: translateY(0); }
+      100% { transform: translateY(60px); }
+    }
+
+    /* Gradiente radial central */
+    .hero::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 50%,
+        rgba(200,16,46,.18) 0%,
+        transparent 70%);
+      pointer-events: none;
+    }
+
+    .hero-inner {
+      position: relative;
+      z-index: 2;
+      max-width: 860px;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      background: rgba(200,16,46,.15);
+      border: 1px solid rgba(200,16,46,.4);
+      border-radius: 100px;
+      padding: 6px 18px;
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .12em;
+      text-transform: uppercase;
+      color: #ff8fa0;
+      margin-bottom: 32px;
+      opacity: 0;
+      animation: fadeUp .6s .2s forwards;
+    }
+
+    .badge-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--rojo);
+      box-shadow: 0 0 8px var(--rojo);
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0%,100% { opacity: 1; transform: scale(1); }
+      50%      { opacity: .5; transform: scale(1.4); }
+    }
+
+    .univ-logo {
+      font-family: 'DM Mono', monospace;
+      font-size: 12px;
+      letter-spacing: .25em;
+      text-transform: uppercase;
+      color: var(--acento);
+      margin-bottom: 20px;
+      opacity: 0;
+      animation: fadeUp .6s .4s forwards;
+    }
+
+    h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      font-weight: 900;
+      line-height: 1.08;
+      letter-spacing: -.02em;
+      margin-bottom: 28px;
+      opacity: 0;
+      animation: fadeUp .7s .6s forwards;
+    }
+
+    h1 em {
+      font-style: normal;
+      color: var(--rojo);
+      position: relative;
+    }
+
+    h1 em::after {
+      content: '';
+      position: absolute;
+      left: 0; bottom: 4px;
+      width: 100%; height: 3px;
+      background: var(--acento);
+      transform: scaleX(0);
+      transform-origin: left;
+      animation: underlineIn .6s 1.4s forwards;
+    }
+
+    @keyframes underlineIn {
+      to { transform: scaleX(1); }
+    }
+
+    .subtitle {
+      font-size: 1rem;
+      font-weight: 300;
+      color: rgba(255,255,255,.55);
+      max-width: 520px;
+      margin: 0 auto 48px;
+      line-height: 1.7;
+      opacity: 0;
+      animation: fadeUp .6s .8s forwards;
+    }
+
+    .grupo-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 12px;
+      background: var(--rojo);
+      padding: 14px 32px;
+      border-radius: 4px;
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 700;
+      letter-spacing: .04em;
+      box-shadow: 0 8px 40px rgba(200,16,46,.4);
+      opacity: 0;
+      animation: fadeUp .6s 1s forwards;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .grupo-tag::before {
+      content: '';
+      position: absolute;
+      top: -50%; left: -60%;
+      width: 40%; height: 200%;
+      background: rgba(255,255,255,.15);
+      transform: skewX(-20deg);
+      animation: sheen 3s 2s infinite;
+    }
+
+    @keyframes sheen {
+      0%   { left: -60%; }
+      100% { left: 160%; }
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Scroll cue */
+    .scroll-cue {
+      position: absolute;
+      bottom: 32px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      color: rgba(255,255,255,.3);
+      font-family: 'DM Mono', monospace;
+      font-size: 10px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      opacity: 0;
+      animation: fadeUp .5s 1.6s forwards;
+    }
+
+    .scroll-arrow {
+      width: 20px; height: 20px;
+      border-right: 1.5px solid rgba(255,255,255,.3);
+      border-bottom: 1.5px solid rgba(255,255,255,.3);
+      transform: rotate(45deg);
+      animation: bounce 1.5s infinite;
+    }
+
+    @keyframes bounce {
+      0%,100% { transform: rotate(45deg) translateY(0); }
+      50%      { transform: rotate(45deg) translateY(5px); }
+    }
+
+    /* ── SECCIÓN INFO ── */
+    .info-section {
+      background: var(--blanco);
+      color: var(--oscuro);
+      padding: 100px 24px;
+    }
+
+    .container { max-width: 1000px; margin: 0 auto; }
+
+    .section-label {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .2em;
+      text-transform: uppercase;
+      color: var(--rojo);
+      margin-bottom: 16px;
+    }
+
+    .section-title {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 3rem);
+      font-weight: 700;
+      line-height: 1.2;
+      margin-bottom: 48px;
+      color: var(--oscuro);
+    }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(270px, 1fr));
+      gap: 24px;
+    }
+
+    .card {
+      background: var(--crema);
+      border-radius: 8px;
+      padding: 36px 28px;
+      border-left: 4px solid var(--rojo);
+      transition: transform .25s, box-shadow .25s;
+    }
+
+    .card:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 20px 50px rgba(0,0,0,.12);
+    }
+
+    .card-icon {
+      font-size: 2rem;
+      margin-bottom: 16px;
+    }
+
+    .card-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.1rem;
+      font-weight: 700;
+      margin-bottom: 10px;
+      color: var(--oscuro);
+    }
+
+    .card-text {
+      font-size: .9rem;
+      color: var(--gris);
+      line-height: 1.65;
+    }
+
+    /* ── SECCIÓN DARK ── */
+    .dark-section {
+      background: #0f0f1e;
+      padding: 100px 24px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .dark-section::before {
+      content: '';
+      position: absolute;
+      top: -80px; right: -80px;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(200,16,46,.15), transparent 70%);
+      pointer-events: none;
+    }
+
+    .stat-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+      gap: 2px;
+      margin-top: 48px;
+      border: 1px solid rgba(255,255,255,.06);
+      border-radius: 8px;
+      overflow: hidden;
+    }
+
+    .stat {
+      padding: 40px 28px;
+      background: rgba(255,255,255,.03);
+      border-right: 1px solid rgba(255,255,255,.06);
+      text-align: center;
+    }
+
+    .stat:last-child { border-right: none; }
+
+    .stat-number {
+      font-family: 'Playfair Display', serif;
+      font-size: 3rem;
+      font-weight: 900;
+      color: var(--rojo);
+      line-height: 1;
+      margin-bottom: 8px;
+    }
+
+    .stat-label {
+      font-size: .8rem;
+      color: rgba(255,255,255,.45);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+    }
+
+    /* ── FOOTER ── */
+    footer {
+      background: #07070f;
+      padding: 48px 24px;
+      text-align: center;
+      border-top: 1px solid rgba(200,16,46,.2);
+    }
+
+    .footer-logo {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 700;
+      color: var(--blanco);
+      margin-bottom: 8px;
+    }
+
+    .footer-logo span { color: var(--rojo); }
+
+    .footer-sub {
+      font-family: 'DM Mono', monospace;
+      font-size: 11px;
+      letter-spacing: .15em;
+      text-transform: uppercase;
+      color: rgba(255,255,255,.25);
+    }
+
+    .divider {
+      width: 48px; height: 3px;
+      background: var(--rojo);
+      margin: 32px auto;
+      border-radius: 2px;
+    }
+
+    /* ── RESPONSIVE ── */
+    @media (max-width: 600px) {
+      .stat-grid { grid-template-columns: 1fr 1fr; }
+      .stat { border-right: none; border-bottom: 1px solid rgba(255,255,255,.06); }
+    }
+  </style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="badge">
+      <span class="badge-dot"></span>
+      Servidor NAT — Laboratorio Activo
+    </div>
+    <div class="univ-logo">Universidad Peruana de Ciencias Aplicadas</div>
+    <h1>Arquitectura de<br/><em>Computadores</em> y<br/>Sistemas Operativos<br/>2026-1</h1>
+    <p class="subtitle">
+      Laboratorio de configuración de servidor NAT con Rocky Linux 10.1.
+    </p>
+    <div class="grupo-tag">⚙ Grupo 3
+      <br/>Alberca Munive, Luis Enrico
+      <br/>Salome Salazar, Mijail Patrik Porfirio
+      <br/>Jaramillo Espinoza, Angela Ariana
+      <br/>Arevalo Villano, Jaime Manuel
+      <br/>
+      <br/>👨‍🏫 Docente
+      <br/>Torrejón Arias, Luis Francisco
+    </div>
+  </div>
+  <div class="scroll-cue">
+    <div class="scroll-arrow"></div>
+    scroll
+  </div>
+</section>
+
+<!-- INFO CARDS -->
+<section class="info-section">
+  <div class="container">
+    <div class="section-label">Sobre el laboratorio</div>
+    <h2 class="section-title">Configuración de red<br/>y servicios web</h2>
+    <div class="cards">
+      <div class="card">
+        <div class="card-icon">🌐</div>
+        <div class="card-title">Servidor IIS</div>
+        <div class="card-text">Internet Information Services configurado sobre Windows Server 2025 para alojar este sitio web estático como resultado del laboratorio.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🔀</div>
+        <div class="card-title">Servidor NAT</div>
+        <div class="card-text">Configuración de traducción de direcciones de red (NAT) para permitir el acceso externo al servidor IIS desde la red local del laboratorio.</div>
+      </div>
+      <div class="card">
+        <div class="card-icon">🖥</div>
+        <div class="card-title">Virtualización</div>
+        <div class="card-text">Entorno montado sobre VMware Workstation con máquinas virtuales configuradas en red para simular un escenario de producción real.</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STATS -->
+<section class="dark-section">
+  <div class="container">
+    <div class="section-label" style="color:#ff8fa0;">Datos del curso</div>
+    <h2 class="section-title" style="color:var(--blanco);">Información<br/>académica</h2>
+    <div class="stat-grid">
+      <div class="stat">
+        <div class="stat-number">UPC</div>
+        <div class="stat-label">Universidad</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">03</div>
+        <div class="stat-label">Grupo</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">IIS</div>
+        <div class="stat-label">Servidor Web</div>
+      </div>
+      <div class="stat">
+        <div class="stat-number">NAT</div>
+        <div class="stat-label">Configuración de red</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">U<span>P</span>C</div>
+  <div class="footer-sub">Universidad Peruana de Ciencias Aplicadas</div>
+  <div class="divider"></div>
+  <div class="footer-sub">Arquitectura de Computadores y Sistemas Operativos &nbsp;·&nbsp; Grupo 3</div>
+</footer>
+
+<script>
+  // Animación de entrada para cards al hacer scroll
+  const cards = document.querySelectorAll('.card, .stat');
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry, i) => {
+      if (entry.isIntersecting) {
+        entry.target.style.opacity = '0';
+        entry.target.style.transform = 'translateY(30px)';
+        entry.target.style.transition = `opacity .5s ${i * 0.1}s, transform .5s ${i * 0.1}s`;
+        requestAnimationFrame(() => {
+          entry.target.style.opacity = '1';
+          entry.target.style.transform = 'translateY(0)';
+        });
+        observer.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  cards.forEach(c => observer.observe(c));
+
+  // Contador animado para las stats
+  function animateNumber(el, target, isText) {
+    if (isText) return;
+    let current = 0;
+    const step = target / 40;
+    const timer = setInterval(() => {
+      current += step;
+      if (current >= target) { el.textContent = target.toString().padStart(2, '0'); clearInterval(timer); }
+      else { el.textContent = Math.floor(current).toString().padStart(2, '0'); }
+    }, 30);
+  }
+
+  const statNumbers = document.querySelectorAll('.stat-number');
+  const statObserver = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const el = entry.target;
+        const val = parseInt(el.textContent);
+        if (!isNaN(val)) animateNumber(el, val, false);
+        statObserver.unobserve(el);
+      }
+    });
+  }, { threshold: 0.5 });
+
+  statNumbers.forEach(n => statObserver.observe(n));
+</script>
+
+</body>
+</html>
